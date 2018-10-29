@@ -8,7 +8,6 @@ describe('Smoke Test', function () {
 describe('On initial page load', function () {
   before(() => cy.visit('/'));
 
-  it('the basic page elements should exist', function () {
     ['#map', 'nav',
       '#info', '#info #latitude', '#info #longitude',
       '#info #county', '#info #town',
@@ -20,7 +19,6 @@ describe('On initial page load', function () {
       });
     });
   });
-});
 
 describe('After clicking start', () => {
   before(() => {
