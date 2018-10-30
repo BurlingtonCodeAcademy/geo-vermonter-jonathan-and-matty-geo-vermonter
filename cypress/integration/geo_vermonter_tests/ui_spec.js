@@ -10,8 +10,7 @@ describe('On initial page load', function () {
 
   ['#map', 'nav',
     '#info', '#info #latitude', '#info #longitude',
-    '#info #county', '#info #town',
-    '#score',
+    '#info #county', '#score',
     'button#start', 'button#guess', 'button#quit', 'button#quit',
     'button#north', 'button#south', 'button#east', 'button#west',
     '#score'
@@ -42,7 +41,7 @@ describe('After clicking start', () => {
 
   describe('the info fields', () => {
     ['#info #latitude', '#info #longitude',
-      '#info #county', '#info #town',
+      '#info #county'
     ].forEach((selector) => {
       it(selector + ' element should contain a question mark', function () {
         cy.get(selector).then((element) => {
