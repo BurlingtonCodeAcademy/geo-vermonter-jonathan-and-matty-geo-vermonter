@@ -29,26 +29,26 @@
           <div id='info'>
             <div id='latitude'>Latitude = ?</div>
             <div id='longitude'>Longitude = ?</div>
-            <div id='county'>?</div>
-            <div id='town'>?</div>
+            <div id='county'>County = ?</div>
+            <input id='town' value="?" type="hidden">
           </div>
         </nav>
         
   <div id='map-wrapper'>
     <div id="northButton">
-      <button id='north'>North</button>
+      <button id='north' onclick="goNorth(0.1)">North</button>
     </div>
     <div id="map-middle">
       <div id="westButton">
-        <button id='west'>West</button>
+        <button id='west' onclick="goWest(0.1)">West</button>
       </div>
       <div id="map"></div>
       <div id="eastButton">
-        <button id='east'>East</button>
+        <button id='east' onclick="goEast(0.1)">East</button>
       </div>
     </div>
     <div id="southButton">
-      <button id='south'>South</button>
+      <button id='south' onclick="goSouth(0.1)">South</button>
     </div>
   </div>
 </div>
@@ -64,7 +64,7 @@
   </div>
   <script>
     quit();
-    drawMap();
+    drawMap(43.7, -72.45, 7, 43.7, -72.45);
   </script>
 </body>
 
