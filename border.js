@@ -1,4 +1,4 @@
-let border_data = {
+let borderData = {
   "type": "Feature",
   "properties": {
     "name": "Vermont",
