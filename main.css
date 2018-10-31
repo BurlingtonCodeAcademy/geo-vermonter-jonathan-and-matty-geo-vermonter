@@ -3,27 +3,43 @@ body {
   font-family: VT323;
   font-size: 24px;
   background-image: url(background.jpg);
-  background-size: 1600px;
-  background-position-y: -140px; 
+  background-size:     1600px;
+  background-repeat:   no-repeat;
+  background-position-y: -110px;
+  color: rgb(0, 78, 0);
 }
 
 button {
   background-color: white;
+  background-image: linear-gradient(rgb(225, 225, 225), white, rgb(225, 225, 225));
   color: darkgreen;
   font-size: 19px;
   border: 1px solid darkgreen;
   border-radius: 3px;
   line-height: 20px;
+  font-family: 'Permanent Marker'
+}
+
+button:hover {
+  opacity: 0.7;
+  background-image: none;
 }
 
 button:disabled {
   opacity: 0.4;
 }
 
+
 h1 {
   text-align: center;
-  color: rgb(61, 180, 97);
+  color: rgb(47, 72, 119);
   min-width: 800px;
+  font-family: 'Permanent Marker';
+  font-size: 40px;
+}
+
+#gv-green {
+  color: rgb(61, 180, 97);
 }
 
 #nav-and-map {
@@ -32,13 +48,36 @@ h1 {
 
 nav {
   flex: 2;
-  background-image: linear-gradient(180deg, rgb(61, 180, 97), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97, 0.4), rgb(243, 255, 242, 0.4), rgb(61, 180, 97));
-  margin-right: 15px;
+  background: repeating-linear-gradient(transparent, #81978079 34.08px),
+  repeating-linear-gradient(0.25turn, transparent, #9fb6af9d 32.7px);  margin-right: 15px;
   height: auto;
   width: auto;
   min-height: 600px;
   min-width: 260px;
-  border-radius: 6px;
+  border: 2px dotted darkgreen;
+  border-radius: 3px;
+}
+
+#info {  
+  font-family: 'Permanent Marker';
+  font-size: 17px;
+  text-shadow: white 0 0 1.5px;
+}
+
+#latitude, #longitude {
+  font-family: VT323;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#guesslist {
+  color: rgb(255, 103, 82);
+  text-shadow: black 0 0 2px;
+}
+
+input[type="radio"]:checked + span {
+  color: rgb(108, 82, 255);
+  text-shadow: white 0 0 4px;
 }
 
 .row {
@@ -55,7 +94,7 @@ nav {
   background-image: linear-gradient(10deg, rgb(245, 245, 255, 0.3), rgb(246, 246, 252, 0.4));
   display: flex;
   flex-direction: column;
-  border: 3px dotted rgb(61, 180, 97);
+  border: 3px solid rgb(47, 72, 119);
   border-radius: 12px;
 }
 
@@ -90,16 +129,19 @@ nav {
 
 #county-image {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin: 25px;
+  margin: 0 10px 0 15px;
   background-color: white;
+  border: 3px solid darkgreen;
   border-radius: 8px;
-  padding: 0 25px 0 25px;
+  padding: 60px 25px 240px 25px;
 }
 
 .blink-me {
   color: red;
+  font-family: VT323;
+  font-size: 60px;
   animation: blinker 1s linear infinite;
 }
 

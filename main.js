@@ -22,17 +22,21 @@ function titleUpdate(text) {
   document.getElementById('winners-circle').innerHTML = text;
 }
 
+function disableButtons(array) {
+  for (button of array) {
+    document.getElementById(button).disabled = true;
+  }
+}
+
+function enableButtons(array) {
+  for (button of array) {
+    document.getElementById(button).disabled = false;
+  }
+}
+
 function start() {
-  document.getElementById('start').disabled = true;
-  document.getElementById('north').disabled = false;
-  document.getElementById('west').disabled = false;
-  document.getElementById('east').disabled = false;
-  document.getElementById('south').disabled = false;
-  document.getElementById('guess').disabled = false;
-  document.getElementById('quit').disabled = false;
-  document.getElementById('longitude').innerHTML = '?';
-  document.getElementById('latitude').innerHTML = '?';
-  document.getElementById('county').innerHTML = '?';
+  disableButtons(['start']);
+  enableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'longitude', 'latitude', 'county']);
   myCounty = pickACounty();
   console.log(myCounty);
   lat = countyCenters[countyIndex][0];
@@ -41,36 +45,34 @@ function start() {
   viewLong = long;
   myMap.setView(countyCenters[countyIndex], 18);
   score = +score + 150;
-  titleUpdate(`Welcome to GeoVermonter!<br>Your Score is: <span class="blink-me">${score}</span>`);
+  titleUpdate(`Welcome to <span id="gv-green">GeoVermonter</span><br>Your Score is: <span class="blink-me">${score}</span>`);
   if (myMarker) {
     myMarker.remove();
   }
 }
 
 function cancel() {
+  enableButtons(['guess']);
   document.getElementById('guessguess').innerHTML = "";
   document.getElementById('cancelguess').innerHTML = "";
   document.getElementById('guesslist').innerHTML = "";
 }
 
 function guess() {
+  disableButtons(['guess']);
   document.getElementById('guessguess').innerHTML = "<form><button id='guessbutton' type='button' onclick=\"didIWin(document.querySelector('input[name=radio]:checked').id)\">Guess</button>";
   document.getElementById('cancelguess').innerHTML = "<button id='cancelbutton' onclick='cancel()'>Cancel</button>";
   document.getElementById('guesslist').innerHTML = "What county are we in?";
   for (county of counties) {
-    document.getElementById('guesslist').innerHTML += `<div><input type="radio" name="radio" id="${county}">${county}</input></div>`;
+    document.getElementById('guesslist').innerHTML += `<div><input type="radio" name="radio" id="${county}"><span>${county}</span></input></div>`;
   }
   document.getElementById('guesslist').innerHTML += "</form>";
 }
 
 function quit(winner) {
-  document.getElementById('start').disabled = false;
-  document.getElementById('north').disabled = true;
-  document.getElementById('west').disabled = true;
-  document.getElementById('east').disabled = true;
-  document.getElementById('south').disabled = true;
-  document.getElementById('guess').disabled = true;
-  document.getElementById('quit').disabled = true;
+  cancel();
+  enableButtons(['start']);
+  disableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'longitude', 'latitude', 'county']);
   if (lat != 0 && long != 0) {
     document.getElementById('longitude').innerHTML = long;
     document.getElementById('latitude').innerHTML = lat;
@@ -140,30 +142,31 @@ function drawMap(lat, long, myZoom, mLat, mLong) {
   myMap.touchZoom.disable();
 }
 
+function updateScore() {
+  score = score - 1;
+  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
+}
+
 function goNorth(howFar) {
   viewLat = (+viewLat + howFar);
   myMap.panTo(new L.LatLng(viewLat, long));
-  score = score - 1;
-  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
+  updateScore();
 }
 
 function goSouth(howFar) {
   viewLat = (+viewLat - howFar);
   myMap.panTo(new L.LatLng(viewLat, long));
-  score = score - 1;
-  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
+  updateScore();
 }
 
 function goEast(howFar) {
   viewLong = (+viewLong + howFar);
   myMap.panTo(new L.LatLng(lat, viewLong));
-  score = score - 1;
-  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
+  updateScore();
 }
 
 function goWest(howFar) {
   viewLong = (+viewLong - howFar);
   myMap.panTo(new L.LatLng(lat, viewLong));
-  score = score - 1;
-  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
+  updateScore();
 }
