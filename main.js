@@ -1,36 +1,108 @@
 let lat = 0;
 let long = 0;
+let viewLat = 0;
+let viewLong = 0;
+let score = 0;
+
+const countyCenters = [[44.0280737, -73.1700055], [43.0266422, -73.1353424], [44.4618829, -72.1159899], [44.441726, -73.1626965], [44.6793495, -71.7801148], [44.8245124, -72.9760341], [44.7882463, -73.3209557], [44.599563, -72.6278814], [43.9956247, -72.3912821], [44.7752604, -72.3065957], [43.5745438, -73.0462729], [44.2591756, -72.664821], [42.9943272, -72.7004238], [43.5908061, -72.5531194]];
 const counties = ["Addison County", "Bennington County", "Caledonia County", "Chittenden County", "Essex County", "Franklin County", "Grand Isle County", "Lamoille County", "Orange County", "Orleans County", "Rutland County", "Washington County", "Windham County", "Windsor County"];
+let myCounty;
+let countyIndex;
+
+let myMap;
+let myMarker;
+
+function pickACounty() {
+  let county = (Math.floor(Math.random() * counties.length));
+  countyIndex = county;
+  return counties[county];
+}
+
+function titleUpdate(text) {
+  document.getElementById('winners-circle').innerHTML = text;
+}
 
 function start() {
   document.getElementById('start').disabled = true;
+  document.getElementById('north').disabled = false;
+  document.getElementById('west').disabled = false;
+  document.getElementById('east').disabled = false;
+  document.getElementById('south').disabled = false;
   document.getElementById('guess').disabled = false;
   document.getElementById('quit').disabled = false;
-  lat = 44.47613;
-  long = -73.2119;
+  document.getElementById('longitude').innerHTML = '?';
+  document.getElementById('latitude').innerHTML = '?';
+  document.getElementById('county').innerHTML = '?';
+  myCounty = pickACounty();
+  console.log(myCounty);
+  lat = countyCenters[countyIndex][0];
+  long = countyCenters[countyIndex][1];
+  viewLat = lat;
+  viewLong = long;
+  myMap.setView(countyCenters[countyIndex], 18);
+  score = +score + 150;
+  titleUpdate(`Welcome to GeoVermonter!<br>Your Score is: <span class="blink-me">${score}</span>`);
+  if (myMarker) {
+    myMarker.remove();
+  }
+}
+
+function cancel() {
+  document.getElementById('guessguess').innerHTML = "";
+  document.getElementById('cancelguess').innerHTML = "";
+  document.getElementById('guesslist').innerHTML = "";
 }
 
 function guess() {
-  document.getElementById('guessguess').innerHTML = "<button id='guessbutton'>Guess</button>";
-  document.getElementById('cancelguess').innerHTML = "<button id='cancelbutton'>Cancel</button>";
-  document.getElementById('guesslist').innerHTML = "What county are we in?<form>";
+  document.getElementById('guessguess').innerHTML = "<form><button id='guessbutton' type='button' onclick=\"didIWin(document.querySelector('input[name=radio]:checked').id)\">Guess</button>";
+  document.getElementById('cancelguess').innerHTML = "<button id='cancelbutton' onclick='cancel()'>Cancel</button>";
+  document.getElementById('guesslist').innerHTML = "What county are we in?";
   for (county of counties) {
-    document.getElementById('guesslist').innerHTML += `<div><input type="radio" name="type" id="${county}">${county}</input></div>`;
+    document.getElementById('guesslist').innerHTML += `<div><input type="radio" name="radio" id="${county}">${county}</input></div>`;
   }
   document.getElementById('guesslist').innerHTML += "</form>";
 }
 
-function quit() {
+function quit(winner) {
   document.getElementById('start').disabled = false;
+  document.getElementById('north').disabled = true;
+  document.getElementById('west').disabled = true;
+  document.getElementById('east').disabled = true;
+  document.getElementById('south').disabled = true;
   document.getElementById('guess').disabled = true;
   document.getElementById('quit').disabled = true;
   if (lat != 0 && long != 0) {
     document.getElementById('longitude').innerHTML = long;
     document.getElementById('latitude').innerHTML = lat;
+    document.getElementById('county').innerHTML = myCounty;
+    myMap.setView([43.7, -72.45], 7);
+    myMarker = L.marker([lat, long]).addTo(myMap);
+    lat = 0;
+    long = 0;
+    viewLat = 0;
+    viewLong = 0;
+    if (winner != 'iwon') {
+      titleUpdate(`Too bad!  It was ${myCounty}.`);
+      score = 0;
+    }
   }
 }
 
-let county_data =
+function didIWin(guess) {
+  if (myCounty == guess) {
+    titleUpdate(`You win!<br>Your score is: <span class="blink-me">${score}</span>`);
+    cancel();
+    quit('iwon');
+  } else {
+    score = score - 10;
+    if (score < 0) {
+      score = 1;
+    }
+    titleUpdate(`No, it's not ${guess}.  Try again!<br>Your score is: <span class="blink-me">${score}</span>`);
+  }
+}
+
+const countyBorders =
 {
   "type": "FeatureCollection", "features": [
     { "type": "Feature", "geometry": { "type": "Polygon", "coordinates": [[[-71.89930556685702, 45.007967038225665], [-71.90639495793083, 44.972034737155035], [-71.91256962807861, 44.941586303684424], [-71.92014649911405, 44.901534959428105], [-71.88768224564625, 44.88414402607262], [-71.87785847130161, 44.87877145078154], [-71.89809815971485, 44.85887096608518], [-71.91995085333807, 44.83690375089462], [-71.92931744591431, 44.82964832537888], [-71.93683910186412, 44.822541420493785], [-71.97482609720078, 44.78724062557453], [-71.93929273719223, 44.76945013143421], [-71.95140936345551, 44.757495286499], [-71.9750836685309, 44.734647555007385], [-71.99123898495328, 44.71882667502445], [-71.9995389566063, 44.711086418730154], [-72.01145503900082, 44.698841717258844], [-72.05216258622916, 44.718994083231216], [-72.08972446262909, 44.73767356435365], [-72.11436109432913, 44.74982120146015], [-72.11197436534691, 44.74320799587801], [-72.10194093000278, 44.71773911466352], [-72.08929717635908, 44.68509008796579], [-72.12452275235108, 44.69729842843127], [-72.1459577724481, 44.704507419885516], [-72.14996003178632, 44.6978650872916], [-72.18495758607976, 44.64925658454629], [-72.19926218787573, 44.628291149617525], [-72.2024891506249, 44.62410595577774], [-72.20712445792117, 44.6167421524504], [-72.22889633382701, 44.58798400220501], [-72.2616720312797, 44.54376984071134], [-72.26289163479404, 44.54250346778505], [-72.28771378786477, 44.55181867632704], [-72.30319817668146, 44.55778858931625], [-72.35419116580978, 44.57644905463246], [-72.36653172204848, 44.58079434275957], [-72.37386153254992, 44.584171294492144], [-72.37175984409885, 44.58823645937912], [-72.36838584940472, 44.59285547005072], [-72.37112518348113, 44.593344555644464], [-72.45815134995883, 44.62505021122964], [-72.48279415530956, 44.634112332199315], [-72.45420358363344, 44.67313270642213], [-72.41767326776278, 44.722688949026555], [-72.4224471271231, 44.72447131979226], [-72.50087300480874, 44.752627096688336], [-72.52019325610684, 44.75974616084036], [-72.57907591571808, 44.780904784770726], [-72.53328173402815, 44.834089982270065], [-72.53621528661253, 44.86799211898105], [-72.53698928285543, 44.8750039568626], [-72.54138462174261, 44.92598662813111], [-72.53650006984168, 44.92612408518761], [-72.53850917778888, 44.935403935366374], [-72.55123785454646, 44.99658426579739], [-72.55248533250622, 45.00300225609495], [-72.55392229303604, 45.00813729074689], [-72.53091991438157, 45.00778039262025], [-72.47902537887512, 45.008838841381674], [-72.45043879964273, 45.00857176071912], [-72.42484626196176, 45.00775581214537], [-72.420470493147, 45.00747246941556], [-72.38800538212027, 45.00626980117705], [-72.36863243694785, 45.006225410720376], [-72.32666231926974, 45.00481523852764], [-72.314255492748, 45.00385615373037], [-72.2933492976557, 45.00436457144448], [-72.27021386211268, 45.004208558100245], [-72.25564535743473, 45.004431393922964], [-72.24283281090447, 45.004873748680374], [-72.2314723708005, 45.00489811566134], [-72.21063837212338, 45.005300925934165], [-72.17302884110566, 45.005850986351746], [-72.1510671874543, 45.00603159699963], [-72.11041075734528, 45.00562616785874], [-72.05428436960499, 45.00622906217937], [-71.94575433608884, 45.00837926498306], [-71.92932910820353, 45.00811542418737], [-71.91398167725643, 45.007637693207535], [-71.89930556685702, 45.007967038225665]]] }, "properties": { "OBJECTID": 1, "CNTY": 19, "CNTYNAME": "ORLEANS", "ShapeSTArea": 1870297146.3263016, "ShapeSTLength": 209703.88946562487 } },
@@ -50,50 +122,48 @@ let county_data =
   ]
 }
 
-let viewLat;
-let viewLong;
-let myMap;
-
 function drawMap(lat, long, myZoom, mLat, mLong) {
-  viewLat = lat;
-  viewLong = long;
   document.getElementById("map").innerHTML = '';
   myMap = L.map('map', { zoomControl: false }).setView([lat, long], myZoom);
-  mapLink =
-    '<a href="http://www.esri.com/">Esri</a>';
-  wholink =
-    'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
   L.tileLayer(
     'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy; ' + mapLink + ', ' + wholink,
+      attribution: '&copy; <a href="http://www.esri.com/">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
       maxZoom: 18,
       minZoom: 1,
     }).addTo(myMap);
-  L.geoJSON(county_data, { color: 'white', fillOpacity: '.2', weight: 2 }).addTo(myMap);
-  myMap.dragging.disable();
-  myMap.touchZoom.disable();
+  L.geoJSON(countyBorders, { color: 'rgb(255, 255, 255, 0.65)', fillOpacity: '.2', weight: 2 }).addTo(myMap);
   myMap.doubleClickZoom.disable();
   myMap.scrollWheelZoom.disable();
   myMap.boxZoom.disable();
   myMap.keyboard.disable();
+  myMap.dragging.disable();
+  myMap.touchZoom.disable();
 }
 
 function goNorth(howFar) {
   viewLat = (+viewLat + howFar);
-  myMap.panTo(new L.LatLng(viewLat, viewLong));
+  myMap.panTo(new L.LatLng(viewLat, long));
+  score = score - 1;
+  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
 }
 
 function goSouth(howFar) {
   viewLat = (+viewLat - howFar);
-  myMap.panTo(new L.LatLng(viewLat, viewLong));
+  myMap.panTo(new L.LatLng(viewLat, long));
+  score = score - 1;
+  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
 }
 
 function goEast(howFar) {
   viewLong = (+viewLong + howFar);
-  myMap.panTo(new L.LatLng(viewLat, viewLong));
+  myMap.panTo(new L.LatLng(lat, viewLong));
+  score = score - 1;
+  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
 }
 
 function goWest(howFar) {
   viewLong = (+viewLong - howFar);
-  myMap.panTo(new L.LatLng(viewLat, viewLong));
+  myMap.panTo(new L.LatLng(lat, viewLong));
+  score = score - 1;
+  titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
 }

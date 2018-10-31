@@ -55,8 +55,8 @@ describe('After clicking start', () => {
 describe('when user clicks "I Give Up"', () => {
   it('shows latitude & longitude', function () {
     cy.get('#quit').click();
-    cy.get('#info #latitude').contains('44.47613');
-    cy.get('#info #longitude').contains('-73.2119');
+    cy.get('#info #latitude').contains(/(44.0280737|43.0266422|44.4618829|44.441726|44.6793495|44.8245124|44.7882463|44.599563|43.9956247|44.7752604|43.5745438|44.2591756|42.9943272|43.5908061)/);
+    cy.get('#info #longitude').contains(/(-73.1700055|-73.1353424|-72.1159899|-73.1626965|-71.7801148|-72.9760341|-73.3209557|-72.6278814|-72.3912821|-72.3065957|-73.0462729|-72.664821|-72.7004238|-72.5531194)/);
   });
 });
 

@@ -7,7 +7,7 @@
   <title>Geo-Vermonter</title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
     crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
   <link rel="icon" type="image/png" href="pictures/flagMapVT.png">
   <link rel="stylesheet" href="main.css" type="text/css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
@@ -22,51 +22,72 @@
 </head>
 
 <body>
-  <h1>Geo-Vermonter</h1>
+  <h1 id="winners-circle">Welcome to GeoVermonter!<br>Your Score is: <span class="blink-me">150</span></h1>
 
   <div id='nav-and-map'>
     <nav>
       <div id='info'>
-        <div id='latitude'>Latitude = ?</div>
-        <div id='longitude'>Longitude = ?</div>
-        <div id='county'>County = ?</div>
+        <div id='latitude-wrapper'>
+          <span>Latitude = </span>
+          <span id='latitude'>?</span>
+        </div>
+        <div id='longitude-wrapper'>
+          <span>Longitude = </span>
+          <span id='longitude'>?</span>
+        </div>
+        <div id='county-wrapper'>
+          <span>County = </span>
+          <span id='county'>?</span>
+        </div>
+        <div>
+          <div class="row">
+            <button id='start' onclick="start()">Start</button>
+            <button id='guess' onclick="guess()">Guess</button>
+            <button id='quit' onclick="quit()">I Give Up</button>
+          </div>
+          <div id="guess-wrapper">
+            <div id="guesslist"></div>
+            <div class="row">
+              <span id="guessguess"></span>
+              <span id="cancelguess"></span>
+            </div>
+          </div>
+
+        </div>
         <input id='town' value="?" type="hidden">
       </div>
     </nav>
 
     <div id='map-wrapper'>
       <div id="northButton">
-        <button id='north' onclick="goNorth(0.1)">North</button>
+        <button id='north' onclick="goNorth(0.001)">North</button>
       </div>
       <div id="map-middle">
         <div id="westButton">
-          <button id='west' onclick="goWest(0.1)">West</button>
+          <button id='west' onclick="goWest(0.001)">West</button>
         </div>
         <div id="map"></div>
         <div id="eastButton">
-          <button id='east' onclick="goEast(0.1)">East</button>
+          <button id='east' onclick="goEast(0.001)">East</button>
         </div>
       </div>
       <div id="southButton">
-        <button id='south' onclick="goSouth(0.1)">South</button>
+        <button id='south' onclick="goSouth(0.001)">South</button>
       </div>
+    </div>
+    <div id='county-image'>
+      <img src="https://geology.com/county-map/vermont-county-map.gif" alt="Counties of Vermont" id="county-map">
     </div>
   </div>
 
   <div id='score'></div>
-  <button id='start' onclick="start()">Start</button>
-  <button id='guess' onclick="guess()">Guess</button>
-  <button id='quit' onclick="quit()">I Give Up</button>
-  <div id="guess-wrapper">
-    <div id="guesslist"></div>
-    <div id="guessguess"></div>
-    <div id="cancelguess"></div>
-  </div>
   <script>
     quit();
     drawMap(43.7, -72.45, 7, 43.7, -72.45);
   </script>
 </body>
+
+<!--
 
 <head>
   <meta charset="UTF-8">
@@ -80,8 +101,7 @@
   <script src="https://unpkg.com/@mapbox/leaflet-pip@latest/leaflet-pip.js"></script>
   <title>GEO-VERMONTER</title>
 </head>
-
-<!--
+<body>
     <nav>
       <ul class="menu">
         <li><a href="#!">home</a></li>
@@ -112,6 +132,7 @@
 
     <script src="border.js"></script>
     <script src="main.js"></script>
+  </body>
   -->
 
 </html>
