@@ -4,7 +4,7 @@ let viewLat = 0;
 let viewLong = 0;
 let score = 0;
 
-const countyCenters = [[44.0280737, -73.1700055], [43.0266422, -73.1353424], [44.4618829, -72.1159899], [44.441726, -73.1626965], [44.6793495, -71.7801148], [44.8245124, -72.9760341], [44.7882463, -73.3209557], [44.599563, -72.6278814], [43.9956247, -72.3912821], [44.7752604, -72.3065957], [43.5745438, -73.0462729], [44.2591756, -72.664821], [42.9943272, -72.7004238], [43.5908061, -72.5531194]];
+const countyCenters = [[44.001944, -73.145556], [43.1410, -73.0810], [44.46, -72.1159899], [44.501944, -73.093889], [44.73, -71.7801148], [44.809722, -73.087222], [44.7882463, -73.2909557], [44.599563, -72.6278814], [43.9956247, -72.3912821], [44.83, -72.25], [43.606944, -72.974722], [44.262222, -72.580833], [42.99, -72.72], [43.484167, -72.385556]];
 const counties = ["Addison County", "Bennington County", "Caledonia County", "Chittenden County", "Essex County", "Franklin County", "Grand Isle County", "Lamoille County", "Orange County", "Orleans County", "Rutland County", "Washington County", "Windham County", "Windsor County"];
 let myCounty;
 let countyIndex;
@@ -35,7 +35,10 @@ function enableButtons(array) {
 }
 
 function start() {
-  disableButtons(['start']);
+  document.getElementById('longitude').innerHTML = '?';
+  document.getElementById('latitude').innerHTML = '?';
+  document.getElementById('county').innerHTML = '?';
+disableButtons(['start']);
   enableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'longitude', 'latitude', 'county']);
   myCounty = pickACounty();
   console.log(myCounty);

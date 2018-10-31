@@ -133,7 +133,7 @@ input[type="radio"]:checked + span {
   align-items: center;
   margin: 0 10px 0 15px;
   background-color: white;
-  border: 3px solid darkgreen;
+  border: 3px solid rgb(61, 180, 97);
   border-radius: 8px;
   padding: 60px 25px 240px 25px;
 }
