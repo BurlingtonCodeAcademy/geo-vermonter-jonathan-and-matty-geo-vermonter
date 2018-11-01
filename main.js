@@ -3,6 +3,9 @@ let long = 0;
 let viewLat = 0;
 let viewLong = 0;
 let score = 0;
+let gameCount = 0;
+let highScore = 0;
+let highScorer;
 
 const countyCenters = [[44.001944, -73.145556], [43.1410, -73.0810], [44.46, -72.1159899], [44.501944, -73.093889], [44.73, -71.7801148], [44.809722, -73.087222], [44.7882463, -73.2909557], [44.599563, -72.6278814], [43.9956247, -72.3912821], [44.83, -72.25], [43.606944, -72.974722], [44.262222, -72.580833], [42.99, -72.72], [43.484167, -72.385556]];
 const counties = ["Addison County", "Bennington County", "Caledonia County", "Chittenden County", "Essex County", "Franklin County", "Grand Isle County", "Lamoille County", "Orange County", "Orleans County", "Rutland County", "Washington County", "Windham County", "Windsor County"];
@@ -35,20 +38,21 @@ function enableButtons(array) {
 }
 
 function start() {
-  document.getElementById('longitude').innerHTML = '?';
-  document.getElementById('latitude').innerHTML = '?';
+  document.getElementById('longitude').innerHTML = `<span style="font-family: 'Permanent Marker'; font-size: 17px; font-weight: 100;">?</span>`;
+  document.getElementById('latitude').innerHTML = `<span style="font-family: 'Permanent Marker'; font-size: 17px; font-weight: 100;">?</span>`;
   document.getElementById('county').innerHTML = '?';
-disableButtons(['start']);
-  enableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'longitude', 'latitude', 'county']);
+  disableButtons(['start', 'return']);
+  enableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'countiesButton']);
   myCounty = pickACounty();
   console.log(myCounty);
   lat = countyCenters[countyIndex][0];
   long = countyCenters[countyIndex][1];
   viewLat = lat;
   viewLong = long;
-  myMap.setView(countyCenters[countyIndex], 18);
+  myMap.setView(countyCenters[countyIndex], 13);
+  myMap.flyTo(countyCenters[countyIndex], 18);
   score = +score + 150;
-  titleUpdate(`Welcome to <span id="gv-green">GeoVermonter</span><br>Your Score is: <span class="blink-me">${score}</span>`);
+  titleUpdate(`Round ${gameCount + 1} of <span id="gv-green">GeoVermonter</span><br>Your Score is: <span class="blink-me">${score}</span>`);
   if (myMarker) {
     myMarker.remove();
   }
@@ -75,32 +79,45 @@ function guess() {
 function quit(winner) {
   cancel();
   enableButtons(['start']);
-  disableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'longitude', 'latitude', 'county']);
+  disableButtons(['north', 'west', 'east', 'south', 'guess', 'quit', 'return', 'countiesButton']);
   if (lat != 0 && long != 0) {
     document.getElementById('longitude').innerHTML = long;
     document.getElementById('latitude').innerHTML = lat;
     document.getElementById('county').innerHTML = myCounty;
-    myMap.setView([43.7, -72.45], 7);
+    myMap.flyTo([43.8, -72.6], 8);
     myMarker = L.marker([lat, long]).addTo(myMap);
     lat = 0;
     long = 0;
     viewLat = 0;
     viewLong = 0;
+    gameCount = gameCount + 1;
+    if (gameCount == 3) {
+      if (score > highScore) {
+        highScorer = `You have the high score: <span class="blink-me">${score}</span>`;
+        highScore = score;
+      } else {
+        highScorer = "Try again.";
+      }
+      titleUpdate(`Game Over.  ${highScorer}`)
+      score = 0;
+      gameCount = 0;
+    }
     if (winner != 'iwon') {
       titleUpdate(`Too bad!  It was ${myCounty}.`);
       score = 0;
+      gameCount = 0;
     }
   }
 }
 
 function didIWin(guess) {
   if (myCounty == guess) {
-    titleUpdate(`You win!<br>Your score is: <span class="blink-me">${score}</span>`);
+    titleUpdate(`You won this round!<br>Your score is: <span class="blink-me">${score}</span>`);
     cancel();
     quit('iwon');
   } else {
     score = score - 10;
-    if (score < 0) {
+    if (score <= 0) {
       score = 1;
     }
     titleUpdate(`No, it's not ${guess}.  Try again!<br>Your score is: <span class="blink-me">${score}</span>`);
@@ -127,16 +144,15 @@ const countyBorders =
   ]
 }
 
-function drawMap(lat, long, myZoom, mLat, mLong) {
-  document.getElementById("map").innerHTML = '';
-  myMap = L.map('map', { zoomControl: false }).setView([lat, long], myZoom);
+function drawMap(lat, long, myZoom) {
+  myMap = L.map('map-wrapper', { zoomControl: false }).setView([lat, long], myZoom);
   L.tileLayer(
     'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '&copy; <a href="http://www.esri.com/">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
       maxZoom: 18,
       minZoom: 1,
     }).addTo(myMap);
-  L.geoJSON(countyBorders, { color: 'rgb(255, 255, 255, 0.65)', fillOpacity: '.2', weight: 2 }).addTo(myMap);
+  L.geoJSON(countyBorders, { color: 'rgb(255, 255, 255, 0.5)', fillOpacity: '.175', weight: 2 }).addTo(myMap);
   myMap.doubleClickZoom.disable();
   myMap.scrollWheelZoom.disable();
   myMap.boxZoom.disable();
@@ -150,26 +166,38 @@ function updateScore() {
   titleUpdate(`Moving the map reduces your score!<br>Your score is: <span class="blink-me">${score}</span>`);
 }
 
-function goNorth(howFar) {
-  viewLat = (+viewLat + howFar);
-  myMap.panTo(new L.LatLng(viewLat, long));
+function moveAndDrawLine(latPlus, longPlus) {
+  let pointA = new L.LatLng(viewLat, viewLong);
+  viewLat = (+viewLat + latPlus);
+  viewLong = (+viewLong + longPlus);
+  let pointB = new L.LatLng(viewLat, viewLong);
+  let pointList = [pointA, pointB];
+
+  let myPolyline = new L.polyline(pointList, {
+    color: 'yellow',
+    weight: 4,
+    opacity: 0.7,
+    smoothFactor: 1
+  });
+  myPolyline.addTo(myMap);
+  myMap.panTo(new L.LatLng(viewLat, viewLong));
   updateScore();
+  enableButtons(['return']);
 }
 
-function goSouth(howFar) {
-  viewLat = (+viewLat - howFar);
-  myMap.panTo(new L.LatLng(viewLat, long));
-  updateScore();
+function goReturn() {
+  viewLat = lat;
+  viewLong = long;
+  myMap.flyTo(new L.LatLng(lat, long));
+  disableButtons(['return']);
 }
 
-function goEast(howFar) {
-  viewLong = (+viewLong + howFar);
-  myMap.panTo(new L.LatLng(lat, viewLong));
-  updateScore();
+function showCounties() {
+  document.getElementById('map').style.backgroundImage = "url('vermont-county-map.gif')";
+  document.getElementById('county-image').innerHTML = "<button id='countiesButton' onclick='hideCounties()'>Hide Counties</button>";
 }
 
-function goWest(howFar) {
-  viewLong = (+viewLong - howFar);
-  myMap.panTo(new L.LatLng(lat, viewLong));
-  updateScore();
+function hideCounties() {
+  document.getElementById('map').style.backgroundImage = "none";
+  document.getElementById('county-image').innerHTML = "<button id='countiesButton' onclick='showCounties()'>Show Counties</button>";
 }
