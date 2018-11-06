@@ -22,6 +22,7 @@
 
   <div id='nav-and-map'>
     <nav>
+      <div id='high-score'><button id='high-score-button' onclick="highScoreList()">High Score</button></div>
       <div id='info'>
         <div id='latitude-wrapper'>
           <span>Latitude = </span>
@@ -34,6 +35,10 @@
         <div id='county-wrapper'>
           <span>County = </span>
           <span id='county'>?</span>
+        </div>
+        <div id='town-wrapper'>
+          <span>Town = </span>
+          <span id='town'>?</span>
         </div>
         <div>
           <div class="row">
@@ -50,8 +55,8 @@
           </div>
 
         </div>
-        <input id='town' value="?" type="hidden">
       </div>
+      <div id="cheat-sheet">Addison-County</div>
     </nav>
 
     <div id='map-wrapper'>

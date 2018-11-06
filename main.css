@@ -5,7 +5,7 @@ body {
   background-image: url(background.jpg);
   background-size:     1600px;
   background-repeat:   no-repeat;
-  background-position-y: -110px;
+  background-position-y: -40px;
   color: rgb(0, 78, 0);
 }
 
@@ -39,7 +39,7 @@ h1 {
 }
 
 #gv-green {
-  color: rgb(61, 180, 97);
+  color: darkgreen;
 }
 
 #nav-and-map {
@@ -89,21 +89,26 @@ input[type="radio"]:checked + span {
   padding: 5px;
 }
 
+#cheat-sheet {
+  visibility: hidden;
+  display: none;
+}
+
 #map-wrapper {
-  flex: 4;
+  flex: 6;
   height: auto;
   width: auto;
-  min-height: 750px;
+  min-height: 820px;
   min-width: 575px;
   background-image: linear-gradient(10deg, rgb(245, 245, 255, 0.3), rgb(246, 246, 252, 0.2));
   display: flex;
   flex-direction: column;
   border: 3px solid rgb(47, 72, 119);
   border-radius: 12px;
-  margin-right: 5px;
+  margin-right: 0px;
 }
 
-#map-middle, #northButton, #westButton, #eastButton, #southButton, #returnButton, #county-image, .balancer {
+#high-score, #map-middle, #northButton, #westButton, #eastButton, #southButton, #returnButton, #county-image, .balancer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,8 +116,12 @@ input[type="radio"]:checked + span {
   z-index: 1000;
 }
 
+#high-score {
+  padding-bottom: 10px;
+}
+
 #returnButton {
-  padding: 273px 0 0 0;
+  padding: 307px 0 0 0;
 }
 
 #returnButton button {
@@ -144,13 +153,15 @@ input[type="radio"]:checked + span {
 #map {
   height: auto;
   width: auto;
-  min-height: 570px;
+  min-height: 640px;
   min-width: 310px;
   padding: 0;
   border-radius: 8px;
-  background-position-y: 70px;
-  background-size: 100%;
+  background-position: center;
+  background-position-y: 15px;
+  background-size: contain;
   background-repeat: no-repeat;
+  flex: 4;
 }
 
 #county-map {

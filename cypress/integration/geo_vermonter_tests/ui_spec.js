@@ -79,7 +79,7 @@ describe('the Geovermonter app', () => {
 
         it(selector + ' element should contain a question mark', function () {
           cy.get(selector).then((element) => {
-            assert.equal( element.text(), '?');
+            assert.equal(element.text(), '?');
           });
         });
       });
@@ -100,6 +100,16 @@ describe('the Geovermonter app', () => {
     it('shows a dialog box with "Guess" and "Cancel" buttons', function () {
       cy.get('button#guessbutton').contains('Guess');
       cy.get('button#cancelbutton').contains('Cancel');
+    });
+    describe('when the user selects the correct county and clicks "Guess"', function () {
+      it('fills in the info and informs the user "Correct!"', function () {
+        cy.get('#cheat-sheet').then((guess) => {
+          cy.get(`#${guess[0].innerHTML}`).click();
+          cy.get('button#guessbutton').click();
+          cy.get('#winners-circle').contains('Correct')
+        })
+
+      });
     });
   });
 });
